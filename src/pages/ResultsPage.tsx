@@ -30,7 +30,7 @@ const ResultsPage: React.FC = () => {
       {/* Champion Banner */}
       <div className="gradient-hero text-primary-foreground py-10 px-4 text-center">
         <div className="animate-fade-in-up">
-          <Trophy className="w-12 h-12 mx-auto mb-3 text-yellow-400" />
+          <Trophy className="w-12 h-12 mx-auto mb-3 text-secondary" />
           <p className="text-xs uppercase tracking-widest text-primary-foreground/60 mb-1">Champion</p>
           <h1 className="text-3xl md:text-4xl font-black">{champion}</h1>
           <p className="text-sm text-primary-foreground/70 mt-2">🏆 IPL Season Winner</p>
