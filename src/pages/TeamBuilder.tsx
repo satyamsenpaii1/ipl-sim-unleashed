@@ -36,7 +36,7 @@ interface LocalTeam {
 }
 
 const MAX_PLAYING = 11;
-const MAX_SUBS = 4;
+const MAX_SUBS = 1;
 const MAX_OVERSEAS = 4;
 
 const TeamBuilder: React.FC = () => {
