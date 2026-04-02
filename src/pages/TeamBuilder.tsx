@@ -144,11 +144,6 @@ const TeamBuilder: React.FC = () => {
           <p className="text-primary-foreground/70 text-sm md:text-base">
             Build your dream teams, simulate a full IPL tournament
           </p>
-          <div className="flex items-center justify-center gap-4 mt-3 text-xs text-primary-foreground/60">
-            <span>🏏 11 Playing + 4 Subs</span>
-            <span>🌍 Max 4 Overseas</span>
-            <span>🤖 AI-powered name correction</span>
-          </div>
         </div>
       </div>
 
