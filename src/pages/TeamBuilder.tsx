@@ -220,7 +220,7 @@ const TeamBuilder: React.FC = () => {
                         }`}
                         disabled={!canAddSub}
                       >
-                        <UserPlus className="w-3 h-3 inline mr-1" />Subs ({subCount}/4)
+                        <UserPlus className="w-3 h-3 inline mr-1" />Sub ({subCount}/1)
                       </button>
                     </div>
                   )}
