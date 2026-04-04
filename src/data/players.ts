@@ -1,54 +1,272 @@
-// Elite players with rating 9
-export const ELITE_PLAYERS: string[] = [
-  "Virat Kohli", "Rohit Sharma", "MS Dhoni", "Jasprit Bumrah",
-  "Suryakumar Yadav", "KL Rahul", "Rashid Khan", "Pat Cummins",
-  "Jos Buttler", "Faf du Plessis", "AB de Villiers", "David Warner",
-  "Ravindra Jadeja", "Hardik Pandya", "Rishabh Pant",
-  "Yuzvendra Chahal", "Kagiso Rabada", "Trent Boult",
-  "Andre Russell", "Sunil Narine", "Glenn Maxwell",
-  "Shubman Gill", "Sanju Samson", "Mohammed Shami",
-  "Mitchell Starc", "Travis Head", "Heinrich Klaasen",
+// Comprehensive IPL player database (2008–present)
+// Rating: 9 = Elite, 8 = Strong, 7 = Good
+
+interface PlayerData {
+  name: string;
+  rating: number;
+  overseas: boolean;
+}
+
+export const ALL_PLAYERS: PlayerData[] = [
+  // ===== ELITE (Rating 9) =====
+  // Indian
+  { name: "Virat Kohli", rating: 9, overseas: false },
+  { name: "Rohit Sharma", rating: 9, overseas: false },
+  { name: "MS Dhoni", rating: 9, overseas: false },
+  { name: "Jasprit Bumrah", rating: 9, overseas: false },
+  { name: "Suryakumar Yadav", rating: 9, overseas: false },
+  { name: "KL Rahul", rating: 9, overseas: false },
+  { name: "Ravindra Jadeja", rating: 9, overseas: false },
+  { name: "Hardik Pandya", rating: 9, overseas: false },
+  { name: "Rishabh Pant", rating: 9, overseas: false },
+  { name: "Yuzvendra Chahal", rating: 9, overseas: false },
+  { name: "Shubman Gill", rating: 9, overseas: false },
+  { name: "Sanju Samson", rating: 9, overseas: false },
+  { name: "Mohammed Shami", rating: 9, overseas: false },
+  { name: "Yashasvi Jaiswal", rating: 9, overseas: false },
+  // Overseas Elite
+  { name: "Rashid Khan", rating: 9, overseas: true },
+  { name: "Pat Cummins", rating: 9, overseas: true },
+  { name: "Jos Buttler", rating: 9, overseas: true },
+  { name: "Faf du Plessis", rating: 9, overseas: true },
+  { name: "AB de Villiers", rating: 9, overseas: true },
+  { name: "David Warner", rating: 9, overseas: true },
+  { name: "Kagiso Rabada", rating: 9, overseas: true },
+  { name: "Trent Boult", rating: 9, overseas: true },
+  { name: "Andre Russell", rating: 9, overseas: true },
+  { name: "Sunil Narine", rating: 9, overseas: true },
+  { name: "Glenn Maxwell", rating: 9, overseas: true },
+  { name: "Mitchell Starc", rating: 9, overseas: true },
+  { name: "Travis Head", rating: 9, overseas: true },
+  { name: "Heinrich Klaasen", rating: 9, overseas: true },
+
+  // ===== STRONG (Rating 8) =====
+  // Indian
+  { name: "Shreyas Iyer", rating: 8, overseas: false },
+  { name: "Ishan Kishan", rating: 8, overseas: false },
+  { name: "Ruturaj Gaikwad", rating: 8, overseas: false },
+  { name: "Devdutt Padikkal", rating: 8, overseas: false },
+  { name: "Prithvi Shaw", rating: 8, overseas: false },
+  { name: "Deepak Chahar", rating: 8, overseas: false },
+  { name: "Bhuvneshwar Kumar", rating: 8, overseas: false },
+  { name: "Shardul Thakur", rating: 8, overseas: false },
+  { name: "Axar Patel", rating: 8, overseas: false },
+  { name: "Washington Sundar", rating: 8, overseas: false },
+  { name: "Kuldeep Yadav", rating: 8, overseas: false },
+  { name: "Arshdeep Singh", rating: 8, overseas: false },
+  { name: "Rahul Tripathi", rating: 8, overseas: false },
+  { name: "Venkatesh Iyer", rating: 8, overseas: false },
+  { name: "Rinku Singh", rating: 8, overseas: false },
+  { name: "Tilak Varma", rating: 8, overseas: false },
+  { name: "Rajat Patidar", rating: 8, overseas: false },
+  { name: "Mohammed Siraj", rating: 8, overseas: false },
+  { name: "Umran Malik", rating: 8, overseas: false },
+  { name: "Mohit Sharma", rating: 8, overseas: false },
+  { name: "Tushar Deshpande", rating: 8, overseas: false },
+  { name: "Mukesh Kumar", rating: 8, overseas: false },
+  { name: "Abhishek Sharma", rating: 8, overseas: false },
+  { name: "Nitish Kumar Reddy", rating: 8, overseas: false },
+  { name: "Dhruv Jurel", rating: 8, overseas: false },
+  { name: "Jitesh Sharma", rating: 8, overseas: false },
+  { name: "Riyan Parag", rating: 8, overseas: false },
+  { name: "Mayank Agarwal", rating: 8, overseas: false },
+  { name: "Wriddhiman Saha", rating: 8, overseas: false },
+  { name: "Dinesh Karthik", rating: 8, overseas: false },
+  { name: "Robin Uthappa", rating: 8, overseas: false },
+  { name: "Ambati Rayudu", rating: 8, overseas: false },
+  { name: "Manish Pandey", rating: 8, overseas: false },
+  { name: "Ajinkya Rahane", rating: 8, overseas: false },
+  { name: "Shikhar Dhawan", rating: 8, overseas: false },
+  { name: "Gautam Gambhir", rating: 8, overseas: false },
+  { name: "Suresh Raina", rating: 8, overseas: false },
+  { name: "Yuvraj Singh", rating: 8, overseas: false },
+  { name: "Harbhajan Singh", rating: 8, overseas: false },
+  { name: "Zaheer Khan", rating: 8, overseas: false },
+  { name: "Ashish Nehra", rating: 8, overseas: false },
+  { name: "R Ashwin", rating: 8, overseas: false },
+  { name: "Ravichandran Ashwin", rating: 8, overseas: false },
+  { name: "Amit Mishra", rating: 8, overseas: false },
+  { name: "Piyush Chawla", rating: 8, overseas: false },
+  { name: "Irfan Pathan", rating: 8, overseas: false },
+  { name: "Yusuf Pathan", rating: 8, overseas: false },
+  { name: "Krunal Pandya", rating: 8, overseas: false },
+  { name: "Rahul Chahar", rating: 8, overseas: false },
+  { name: "Varun Chakravarthy", rating: 8, overseas: false },
+  { name: "T Natarajan", rating: 8, overseas: false },
+  { name: "Prasidh Krishna", rating: 8, overseas: false },
+  { name: "Avesh Khan", rating: 8, overseas: false },
+  { name: "Harshal Patel", rating: 8, overseas: false },
+  { name: "Sandeep Sharma", rating: 8, overseas: false },
+  { name: "Umesh Yadav", rating: 8, overseas: false },
+  { name: "Ishant Sharma", rating: 8, overseas: false },
+  { name: "Jaydev Unadkat", rating: 8, overseas: false },
+  { name: "Khaleel Ahmed", rating: 8, overseas: false },
+  { name: "Navdeep Saini", rating: 8, overseas: false },
+  { name: "Virender Sehwag", rating: 8, overseas: false },
+  { name: "Sachin Tendulkar", rating: 9, overseas: false },
+  // Overseas Strong
+  { name: "Quinton de Kock", rating: 8, overseas: true },
+  { name: "Marcus Stoinis", rating: 8, overseas: true },
+  { name: "Liam Livingstone", rating: 8, overseas: true },
+  { name: "Sam Curran", rating: 8, overseas: true },
+  { name: "Ben Stokes", rating: 8, overseas: true },
+  { name: "Moeen Ali", rating: 8, overseas: true },
+  { name: "Shimron Hetmyer", rating: 8, overseas: true },
+  { name: "Nicholas Pooran", rating: 8, overseas: true },
+  { name: "Cameron Green", rating: 8, overseas: true },
+  { name: "Phil Salt", rating: 8, overseas: true },
+  { name: "Matheesha Pathirana", rating: 8, overseas: true },
+  { name: "Rachin Ravindra", rating: 8, overseas: true },
+  { name: "Will Jacks", rating: 8, overseas: true },
+  { name: "Jake Fraser-McGurk", rating: 8, overseas: true },
+  { name: "Chris Gayle", rating: 9, overseas: true },
+  { name: "Shane Watson", rating: 8, overseas: true },
+  { name: "Brendon McCullum", rating: 8, overseas: true },
+  { name: "Adam Gilchrist", rating: 8, overseas: true },
+  { name: "Kumar Sangakkara", rating: 8, overseas: true },
+  { name: "Mahela Jayawardene", rating: 8, overseas: true },
+  { name: "Jacques Kallis", rating: 8, overseas: true },
+  { name: "Dale Steyn", rating: 8, overseas: true },
+  { name: "Dwayne Bravo", rating: 8, overseas: true },
+  { name: "Kieron Pollard", rating: 8, overseas: true },
+  { name: "Lasith Malinga", rating: 9, overseas: true },
+  { name: "Mitchell Johnson", rating: 8, overseas: true },
+  { name: "James Anderson", rating: 7, overseas: true },
+  { name: "Kevin Pietersen", rating: 8, overseas: true },
+  { name: "Michael Hussey", rating: 8, overseas: true },
+  { name: "Mike Hussey", rating: 8, overseas: true },
+  { name: "Hashim Amla", rating: 8, overseas: true },
+  { name: "JP Duminy", rating: 7, overseas: true },
+  { name: "Shaun Marsh", rating: 7, overseas: true },
+  { name: "David Miller", rating: 8, overseas: true },
+  { name: "Chris Morris", rating: 8, overseas: true },
+  { name: "Imran Tahir", rating: 8, overseas: true },
+  { name: "Mustafizur Rahman", rating: 8, overseas: true },
+  { name: "Lockie Ferguson", rating: 8, overseas: true },
+  { name: "Anrich Nortje", rating: 8, overseas: true },
+  { name: "Marco Jansen", rating: 8, overseas: true },
+  { name: "Gerald Coetzee", rating: 8, overseas: true },
+  { name: "Josh Hazlewood", rating: 8, overseas: true },
+  { name: "Adam Zampa", rating: 8, overseas: true },
+  { name: "Matt Short", rating: 7, overseas: true },
+  { name: "Devon Conway", rating: 8, overseas: true },
+  { name: "Daryl Mitchell", rating: 8, overseas: true },
+  { name: "Mitchell Marsh", rating: 8, overseas: true },
+  { name: "Tim David", rating: 8, overseas: true },
+  { name: "Alzarri Joseph", rating: 8, overseas: true },
+  { name: "Jason Holder", rating: 8, overseas: true },
+  { name: "Romario Shepherd", rating: 7, overseas: true },
+  { name: "Wanindu Hasaranga", rating: 8, overseas: true },
+  { name: "Maheesh Theekshana", rating: 8, overseas: true },
+  { name: "Mark Wood", rating: 8, overseas: true },
+  { name: "Jofra Archer", rating: 8, overseas: true },
+  { name: "Chris Jordan", rating: 7, overseas: true },
+  { name: "Reece Topley", rating: 7, overseas: true },
+  { name: "Harry Brook", rating: 8, overseas: true },
+  { name: "Jonny Bairstow", rating: 8, overseas: true },
+  { name: "Alex Hales", rating: 7, overseas: true },
+  { name: "Aiden Markram", rating: 8, overseas: true },
+  { name: "Rassie van der Dussen", rating: 7, overseas: true },
+  { name: "Tristan Stubbs", rating: 7, overseas: true },
+  { name: "Ryan Rickelton", rating: 7, overseas: true },
+  { name: "Spencer Johnson", rating: 8, overseas: true },
+  { name: "Nathan Ellis", rating: 7, overseas: true },
+  { name: "Jhye Richardson", rating: 7, overseas: true },
+  { name: "Sean Abbott", rating: 7, overseas: true },
+  { name: "Matthew Wade", rating: 7, overseas: true },
+  { name: "Glenn Phillips", rating: 7, overseas: true },
+  { name: "Kane Williamson", rating: 8, overseas: true },
+  { name: "Sherfane Rutherford", rating: 7, overseas: true },
+  { name: "Rovman Powell", rating: 7, overseas: true },
+  { name: "Shai Hope", rating: 7, overseas: true },
+  { name: "Brandon King", rating: 7, overseas: true },
+  { name: "Akeal Hosein", rating: 7, overseas: true },
+  { name: "Gudakesh Motie", rating: 7, overseas: true },
+  { name: "Fazalhaq Farooqi", rating: 8, overseas: true },
+  { name: "Mujeeb Ur Rahman", rating: 7, overseas: true },
+  { name: "Mohammad Nabi", rating: 7, overseas: true },
+  { name: "Naveen-ul-Haq", rating: 8, overseas: true },
+
+  // ===== GOOD (Rating 7) - Current squad / extras =====
+  // Indian
+  { name: "Sarfaraz Khan", rating: 7, overseas: false },
+  { name: "Harshit Rana", rating: 7, overseas: false },
+  { name: "Yash Dayal", rating: 7, overseas: false },
+  { name: "Ravi Bishnoi", rating: 7, overseas: false },
+  { name: "Rahul Tewatia", rating: 7, overseas: false },
+  { name: "Shahrukh Khan", rating: 7, overseas: false },
+  { name: "Sai Sudharsan", rating: 7, overseas: false },
+  { name: "B Sai Sudharsan", rating: 7, overseas: false },
+  { name: "Vijay Shankar", rating: 7, overseas: false },
+  { name: "Mandeep Singh", rating: 7, overseas: false },
+  { name: "Karun Nair", rating: 7, overseas: false },
+  { name: "Shimron Hetmyer", rating: 8, overseas: true },
+  { name: "Mayank Yadav", rating: 7, overseas: false },
+  { name: "Akash Deep", rating: 7, overseas: false },
+  { name: "Kartik Tyagi", rating: 7, overseas: false },
+  { name: "Chetan Sakariya", rating: 7, overseas: false },
+  { name: "Anuj Rawat", rating: 7, overseas: false },
+  { name: "Swapnil Singh", rating: 7, overseas: false },
+  { name: "Shahbaz Ahmed", rating: 7, overseas: false },
+  { name: "Noor Ahmad", rating: 7, overseas: true },
+  { name: "Rasikh Salam", rating: 7, overseas: false },
+  { name: "Vijaykumar Vyshak", rating: 7, overseas: false },
+  { name: "Suyash Sharma", rating: 7, overseas: false },
+  { name: "Ramandeep Singh", rating: 7, overseas: false },
+  { name: "Nehal Wadhera", rating: 7, overseas: false },
+  { name: "Abhinav Manohar", rating: 7, overseas: false },
+  { name: "Angkrish Raghuvanshi", rating: 7, overseas: false },
+  { name: "Sameer Rizvi", rating: 7, overseas: false },
+  { name: "Prabhsimran Singh", rating: 7, overseas: false },
+  { name: "Atharva Taide", rating: 7, overseas: false },
+  { name: "Abishek Porel", rating: 7, overseas: false },
+  { name: "Kumar Kushagra", rating: 7, overseas: false },
+  { name: "Vishnu Vinod", rating: 7, overseas: false },
+  { name: "Sai Kishore", rating: 7, overseas: false },
+  { name: "R Sai Kishore", rating: 7, overseas: false },
+  { name: "Manoj Tiwary", rating: 7, overseas: false },
+  { name: "Murali Vijay", rating: 7, overseas: false },
+  { name: "Cheteshwar Pujara", rating: 7, overseas: false },
+  { name: "Parthiv Patel", rating: 7, overseas: false },
+  { name: "Naman Ojha", rating: 7, overseas: false },
+  { name: "Saurabh Tiwary", rating: 7, overseas: false },
+  { name: "Manan Vohra", rating: 7, overseas: false },
+  { name: "Ankit Rajpoot", rating: 7, overseas: false },
+  { name: "Siddarth Kaul", rating: 7, overseas: false },
+  { name: "Basil Thampi", rating: 7, overseas: false },
+  { name: "Dhawal Kulkarni", rating: 7, overseas: false },
+  { name: "Vinay Kumar", rating: 7, overseas: false },
+  { name: "Praveen Kumar", rating: 7, overseas: false },
+  { name: "RP Singh", rating: 7, overseas: false },
+  { name: "S Sreesanth", rating: 7, overseas: false },
+  { name: "Munaf Patel", rating: 7, overseas: false },
+  { name: "Pragyan Ojha", rating: 7, overseas: false },
+  { name: "Manoj Tiwary", rating: 7, overseas: false },
 ];
 
-// Strong players with rating 8
-export const STRONG_PLAYERS: string[] = [
-  "Shreyas Iyer", "Ishan Kishan", "Ruturaj Gaikwad", "Devdutt Padikkal",
-  "Prithvi Shaw", "Deepak Chahar", "Bhuvneshwar Kumar", "Shardul Thakur",
-  "Axar Patel", "Washington Sundar", "Kuldeep Yadav", "Arshdeep Singh",
-  "Quinton de Kock", "Marcus Stoinis", "Liam Livingstone",
-  "Sam Curran", "Ben Stokes", "Moeen Ali", "Shimron Hetmyer",
-  "Nicholas Pooran", "Rahul Tripathi", "Venkatesh Iyer",
-  "Yashasvi Jaiswal", "Rinku Singh", "Tilak Varma",
-  "Rajat Patidar", "Cameron Green", "Phil Salt",
-  "Mohammed Siraj", "Umran Malik", "Mohit Sharma",
-  "Tushar Deshpande", "Mukesh Kumar", "Matheesha Pathirana",
-  "Rachin Ravindra", "Will Jacks", "Jake Fraser-McGurk",
-];
+// Deduplicate by lowercase name
+const seen = new Set<string>();
+const uniquePlayers: PlayerData[] = [];
+for (const p of ALL_PLAYERS) {
+  const key = p.name.toLowerCase();
+  if (!seen.has(key)) {
+    seen.add(key);
+    uniquePlayers.push(p);
+  }
+}
 
-// Known overseas (non-Indian) players
-export const OVERSEAS_PLAYERS: string[] = [
-  "Rashid Khan", "Pat Cummins", "Jos Buttler", "Faf du Plessis",
-  "AB de Villiers", "David Warner", "Kagiso Rabada", "Trent Boult",
-  "Andre Russell", "Sunil Narine", "Glenn Maxwell",
-  "Mitchell Starc", "Travis Head", "Heinrich Klaasen",
-  "Quinton de Kock", "Marcus Stoinis", "Liam Livingstone",
-  "Sam Curran", "Ben Stokes", "Moeen Ali", "Shimron Hetmyer",
-  "Nicholas Pooran", "Cameron Green", "Phil Salt",
-  "Matheesha Pathirana", "Rachin Ravindra", "Will Jacks",
-  "Jake Fraser-McGurk",
-];
+export const PLAYER_DATABASE: PlayerData[] = uniquePlayers;
 
-// All known players for autocomplete
-export const ALL_KNOWN_PLAYERS: string[] = [...ELITE_PLAYERS, ...STRONG_PLAYERS];
+export const ALL_KNOWN_PLAYERS: string[] = PLAYER_DATABASE.map(p => p.name);
 
 export function getPlayerRating(name: string): number {
   const normalized = name.toLowerCase().trim();
-  if (ELITE_PLAYERS.some(p => p.toLowerCase() === normalized)) return 9;
-  if (STRONG_PLAYERS.some(p => p.toLowerCase() === normalized)) return 8;
-  return 7;
+  const player = PLAYER_DATABASE.find(p => p.name.toLowerCase() === normalized);
+  return player?.rating ?? 7;
 }
 
 export function isOverseasPlayer(name: string): boolean {
   const normalized = name.toLowerCase().trim();
-  return OVERSEAS_PLAYERS.some(p => p.toLowerCase() === normalized);
+  const player = PLAYER_DATABASE.find(p => p.name.toLowerCase() === normalized);
+  return player?.overseas ?? false;
 }

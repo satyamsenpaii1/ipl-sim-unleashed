@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTournament } from "@/context/TournamentContext";
 import { Team, createPlayer } from "@/lib/simulation";
 import { isOverseasPlayer } from "@/data/players";
-import { correctPlayerName, fetchPlayerNationality } from "@/lib/playerApi";
 import PlayerInput from "@/components/PlayerInput";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { X, Plus, Users, Trophy, Trash2, Globe, UserPlus, Loader2 } from "lucide-react";
+import { X, Plus, Users, Trophy, Trash2, Globe, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 
 const TEAM_COLORS = [
@@ -46,7 +45,13 @@ const TeamBuilder: React.FC = () => {
   const [newTeamName, setNewTeamName] = useState("");
   const [playerInputs, setPlayerInputs] = useState<Record<number, string>>({});
   const [addingMode, setAddingMode] = useState<Record<number, "playing" | "sub">>({});
-  const [loadingPlayer, setLoadingPlayer] = useState<Record<number, boolean>>({});
+
+  // Collect all selected players across all teams
+  const allSelectedPlayers = useMemo(() => {
+    const set = new Set<string>();
+    localTeams.forEach(t => t.players.forEach(p => set.add(p.name.toLowerCase())));
+    return set;
+  }, [localTeams]);
 
   const addTeam = () => {
     if (!newTeamName.trim() || localTeams.length >= 10) return;
@@ -62,7 +67,7 @@ const TeamBuilder: React.FC = () => {
   const getSubCount = (team: LocalTeam) => team.players.filter(p => p.isSub).length;
   const getOverseasCount = (team: LocalTeam) => team.players.filter(p => p.isOverseas).length;
 
-  const addPlayer = async (teamIdx: number, rawName: string) => {
+  const addPlayer = (teamIdx: number, rawName: string) => {
     const team = localTeams[teamIdx];
     const isSub = addingMode[teamIdx] === "sub";
     const playingCount = getPlayingCount(team);
@@ -71,33 +76,19 @@ const TeamBuilder: React.FC = () => {
     if (!isSub && playingCount >= MAX_PLAYING) return;
     if (isSub && subCount >= MAX_SUBS) return;
 
-    setLoadingPlayer({ ...loadingPlayer, [teamIdx]: true });
+    const finalName = rawName.trim();
+    if (!finalName) return;
 
-    let finalName = rawName;
-
-    // Try to correct name via Gemini API
-    try {
-      const corrected = await correctPlayerName(rawName);
-      if (corrected) finalName = corrected;
-    } catch {
-      // Fallback to original name
+    // Check duplicate across all teams
+    if (allSelectedPlayers.has(finalName.toLowerCase())) {
+      toast.error(`${finalName} is already selected in a team!`);
+      return;
     }
 
-    // Check if overseas
-    let overseas = isOverseasPlayer(finalName);
-    if (!overseas) {
-      try {
-        const nationality = await fetchPlayerNationality(finalName);
-        if (nationality === "overseas") overseas = true;
-      } catch {
-        // Default to not overseas if can't determine
-      }
-    }
+    const overseas = isOverseasPlayer(finalName);
 
-    // Enforce overseas limit
     if (overseas && getOverseasCount(team) >= MAX_OVERSEAS) {
       toast.error(`Maximum ${MAX_OVERSEAS} overseas players allowed per team!`);
-      setLoadingPlayer({ ...loadingPlayer, [teamIdx]: false });
       return;
     }
 
@@ -107,7 +98,6 @@ const TeamBuilder: React.FC = () => {
       players: [...updated[teamIdx].players, { name: finalName, isOverseas: overseas, isSub }],
     };
     setLocalTeams(updated);
-    setLoadingPlayer({ ...loadingPlayer, [teamIdx]: false });
   };
 
   const removePlayer = (teamIdx: number, playerIdx: number) => {
@@ -119,7 +109,7 @@ const TeamBuilder: React.FC = () => {
     setLocalTeams(updated);
   };
 
-  const canSimulate = localTeams.length >= 6 && localTeams.every(t => getPlayingCount(t) === 11);
+  const canSimulate = localTeams.length >= 2 && localTeams.every(t => getPlayingCount(t) === 11);
 
   const startSimulation = () => {
     const teams: Team[] = localTeams.map(t => ({
@@ -132,7 +122,6 @@ const TeamBuilder: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <div className="gradient-hero text-primary-foreground py-12 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex items-center justify-center gap-3 mb-3">
@@ -148,7 +137,6 @@ const TeamBuilder: React.FC = () => {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Add Team */}
         <div className="mb-8">
           <h2 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
             <Users className="w-5 h-5 text-primary" />
@@ -167,19 +155,17 @@ const TeamBuilder: React.FC = () => {
               <Plus className="w-4 h-4 mr-1" /> Add
             </Button>
           </div>
-          {localTeams.length < 6 && localTeams.length > 0 && (
-            <p className="text-xs text-muted-foreground mt-2">Need at least 6 teams to simulate</p>
+          {localTeams.length < 2 && localTeams.length > 0 && (
+            <p className="text-xs text-muted-foreground mt-2">Need at least 2 teams to simulate</p>
           )}
         </div>
 
-        {/* Team Cards */}
         <div className="grid gap-4 md:grid-cols-2">
           {localTeams.map((team, teamIdx) => {
             const playingCount = getPlayingCount(team);
             const subCount = getSubCount(team);
             const overseasCount = getOverseasCount(team);
             const mode = addingMode[teamIdx] || "playing";
-            const isLoading = loadingPlayer[teamIdx] || false;
             const canAddPlaying = playingCount < MAX_PLAYING;
             const canAddSub = subCount < MAX_SUBS;
 
@@ -197,7 +183,6 @@ const TeamBuilder: React.FC = () => {
                   </div>
                 </div>
                 <div className="p-4">
-                  {/* Mode Toggle */}
                   {(canAddPlaying || canAddSub) && (
                     <div className="flex gap-1 mb-3">
                       <button
@@ -225,9 +210,8 @@ const TeamBuilder: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Player Input */}
                   {((mode === "playing" && canAddPlaying) || (mode === "sub" && canAddSub)) && (
-                    <div className="mb-3 relative">
+                    <div className="mb-3">
                       <PlayerInput
                         value={playerInputs[teamIdx] || ""}
                         onChange={(val) => setPlayerInputs({ ...playerInputs, [teamIdx]: val })}
@@ -238,18 +222,13 @@ const TeamBuilder: React.FC = () => {
                         placeholder={
                           mode === "playing"
                             ? `Add player ${playingCount + 1}/11`
-                            : `Add substitute ${subCount + 1}/4`
+                            : `Add substitute`
                         }
+                        excludePlayers={allSelectedPlayers}
                       />
-                      {isLoading && (
-                        <div className="absolute right-3 top-2.5">
-                          <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                        </div>
-                      )}
                     </div>
                   )}
 
-                  {/* Playing XI */}
                   {team.players.filter(p => !p.isSub).length > 0 && (
                     <div className="mb-2">
                       <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Playing XI</p>
@@ -262,9 +241,7 @@ const TeamBuilder: React.FC = () => {
                                 <span className="text-muted-foreground text-xs">{pIdx + 1}.</span>
                                 {player.name}
                                 {player.isOverseas && (
-                                  <Badge variant="outline" className="text-[9px] px-1 py-0 h-4 border-blue-400 text-blue-400">
-                                    OS
-                                  </Badge>
+                                  <Badge variant="outline" className="text-[9px] px-1 py-0 h-4 border-blue-400 text-blue-400">OS</Badge>
                                 )}
                               </span>
                               <button onClick={() => removePlayer(teamIdx, actualIdx)} className="text-muted-foreground hover:text-destructive">
@@ -277,10 +254,9 @@ const TeamBuilder: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Substitutes */}
                   {team.players.filter(p => p.isSub).length > 0 && (
                     <div className="mt-2">
-                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Substitutes</p>
+                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Substitute</p>
                       <div className="space-y-1">
                         {team.players.filter(p => p.isSub).map((player) => {
                           const actualIdx = team.players.indexOf(player);
@@ -290,9 +266,7 @@ const TeamBuilder: React.FC = () => {
                                 <UserPlus className="w-3 h-3 text-muted-foreground" />
                                 {player.name}
                                 {player.isOverseas && (
-                                  <Badge variant="outline" className="text-[9px] px-1 py-0 h-4 border-blue-400 text-blue-400">
-                                    OS
-                                  </Badge>
+                                  <Badge variant="outline" className="text-[9px] px-1 py-0 h-4 border-blue-400 text-blue-400">OS</Badge>
                                 )}
                               </span>
                               <button onClick={() => removePlayer(teamIdx, actualIdx)} className="text-muted-foreground hover:text-destructive">
@@ -314,8 +288,7 @@ const TeamBuilder: React.FC = () => {
           })}
         </div>
 
-        {/* Simulate Button */}
-        {localTeams.length >= 2 && (
+        {localTeams.length >= 1 && (
           <div className="mt-8 text-center">
             <Button
               onClick={startSimulation}
@@ -328,7 +301,7 @@ const TeamBuilder: React.FC = () => {
               }`}
             >
               <Trophy className="w-5 h-5 mr-2" />
-              {canSimulate ? "Start Tournament →" : `Need ${Math.max(0, 6 - localTeams.length)} more teams with 11 players each`}
+              {canSimulate ? "Start Tournament →" : `Need ${Math.max(0, 2 - localTeams.length)} more teams with 11 players each`}
             </Button>
           </div>
         )}
