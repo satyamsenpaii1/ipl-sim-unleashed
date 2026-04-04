@@ -48,17 +48,6 @@ const SUMMARIES_WIN = [
   "Partnership at the top proved decisive",
 ];
 
-const SUMMARIES_LOSE = [
-  "Top order collapse cost the match",
-  "Dropped catches proved expensive",
-  "Failed to accelerate in the death overs",
-  "Bowling lacked discipline in the powerplay",
-  "Middle order failed to convert starts",
-  "Poor fielding let the game slip away",
-  "Couldn't handle the spin pressure",
-  "Run rate pressure led to a batting collapse",
-];
-
 function rand(min: number, max: number): number {
   return min + Math.random() * (max - min);
 }
@@ -72,10 +61,9 @@ function pick<T>(arr: T[]): T {
 }
 
 function getPlayerPerformance(player: Player): number {
-  const forms = [0.7, 1.0, 1.0, 1.0, 1.3]; // weighted toward normal
+  const forms = [0.7, 1.0, 1.0, 1.0, 1.3];
   const form = pick(forms);
   const randomness = rand(-2, 2);
-
   return (
     player.rating * rand(0.8, 1.2) * 0.5 +
     player.rating * form * 0.35 +
@@ -89,7 +77,6 @@ function getTeamStrength(team: Team): number {
 }
 
 function generateScore(strength: number, minScore = 130, maxScore = 220): { runs: number; wickets: number } {
-  // Normalize strength to a 0-1 range (typical range ~70-110)
   const normalized = Math.max(0, Math.min(1, (strength - 60) / 60));
   const runs = Math.round(minScore + normalized * (maxScore - minScore) + rand(-15, 15));
   const clampedRuns = Math.max(minScore, Math.min(maxScore, runs));
@@ -100,7 +87,6 @@ function generateScore(strength: number, minScore = 130, maxScore = 220): { runs
 export function simulateMatch(team1: Team, team2: Team): MatchResult {
   const s1 = getTeamStrength(team1);
   const s2 = getTeamStrength(team2);
-
   const score1 = generateScore(s1);
   const score2 = generateScore(s2);
 
@@ -117,34 +103,30 @@ export function simulateMatch(team1: Team, team2: Team): MatchResult {
     margin = `${10 - score2.wickets} wickets`;
     summary = pick(SUMMARIES_WIN);
   } else {
-    // Tie breaker - super over style
     winner = Math.random() > 0.5 ? team1.name : team2.name;
     margin = "Super Over";
     summary = "Thrilling Super Over decided the match!";
   }
 
   return {
-    team1: team1.name,
-    team2: team2.name,
-    winner,
-    team1Score: score1.runs,
-    team1Wickets: score1.wickets,
-    team2Score: score2.runs,
-    team2Wickets: score2.wickets,
-    margin,
-    summary,
+    team1: team1.name, team2: team2.name, winner,
+    team1Score: score1.runs, team1Wickets: score1.wickets,
+    team2Score: score2.runs, team2Wickets: score2.wickets,
+    margin, summary,
   };
+}
+
+export interface PlayoffResults {
+  qualifier1?: MatchResult;
+  eliminator?: MatchResult;
+  qualifier2?: MatchResult;
+  final: MatchResult;
 }
 
 export function simulateTournament(teams: Team[]): {
   leagueMatches: MatchResult[];
   standings: TeamStanding[];
-  playoffs: {
-    qualifier1: MatchResult;
-    eliminator: MatchResult;
-    qualifier2: MatchResult;
-    final: MatchResult;
-  };
+  playoffs: PlayoffResults;
   champion: string;
 } {
   const standingsMap = new Map<string, TeamStanding>();
@@ -157,35 +139,22 @@ export function simulateTournament(teams: Team[]): {
 
   const leagueMatches: MatchResult[] = [];
 
-  // Round robin
   for (let i = 0; i < teams.length; i++) {
     for (let j = i + 1; j < teams.length; j++) {
       const result = simulateMatch(teams[i], teams[j]);
       leagueMatches.push(result);
-
       const s1 = standingsMap.get(teams[i].name)!;
       const s2 = standingsMap.get(teams[j].name)!;
-
-      s1.played++;
-      s2.played++;
-      s1.runsFor += result.team1Score;
-      s1.runsAgainst += result.team2Score;
-      s1.oversFor += 20;
-      s1.oversAgainst += 20;
-      s2.runsFor += result.team2Score;
-      s2.runsAgainst += result.team1Score;
-      s2.oversFor += 20;
-      s2.oversAgainst += 20;
-
-      if (result.winner === teams[i].name) {
-        s1.won++; s1.points += 2; s2.lost++;
-      } else {
-        s2.won++; s2.points += 2; s1.lost++;
-      }
+      s1.played++; s2.played++;
+      s1.runsFor += result.team1Score; s1.runsAgainst += result.team2Score;
+      s1.oversFor += 20; s1.oversAgainst += 20;
+      s2.runsFor += result.team2Score; s2.runsAgainst += result.team1Score;
+      s2.oversFor += 20; s2.oversAgainst += 20;
+      if (result.winner === teams[i].name) { s1.won++; s1.points += 2; s2.lost++; }
+      else { s2.won++; s2.points += 2; s1.lost++; }
     }
   }
 
-  // Calculate NRR
   standingsMap.forEach(s => {
     s.nrr = (s.runsFor / s.oversFor) - (s.runsAgainst / s.oversAgainst);
     s.nrr = Math.round(s.nrr * 1000) / 1000;
@@ -196,29 +165,34 @@ export function simulateTournament(teams: Team[]): {
     return b.nrr - a.nrr;
   });
 
-  // Playoffs
   const teamMap = new Map(teams.map(t => [t.name, t]));
-  const top4 = standings.slice(0, 4);
+  let playoffs: PlayoffResults;
+  let champion: string;
 
-  const qualifier1 = simulateMatch(teamMap.get(top4[0].name)!, teamMap.get(top4[1].name)!);
-  const eliminator = simulateMatch(teamMap.get(top4[2].name)!, teamMap.get(top4[3].name)!);
+  if (teams.length === 2) {
+    // Direct final
+    const final = simulateMatch(teamMap.get(standings[0].name)!, teamMap.get(standings[1].name)!);
+    playoffs = { final };
+    champion = final.winner;
+  } else if (teams.length === 3) {
+    // Top 2 play final, but #1 gets direct entry, #2 vs #3 eliminator
+    const elim = simulateMatch(teamMap.get(standings[1].name)!, teamMap.get(standings[2].name)!);
+    const final = simulateMatch(teamMap.get(standings[0].name)!, teamMap.get(elim.winner)!);
+    playoffs = { eliminator: elim, final };
+    champion = final.winner;
+  } else {
+    // 4+ teams: full IPL playoffs with top 4
+    const top4 = standings.slice(0, Math.min(4, teams.length));
+    const qualifier1 = simulateMatch(teamMap.get(top4[0].name)!, teamMap.get(top4[1].name)!);
+    const eliminator = simulateMatch(teamMap.get(top4[2].name)!, teamMap.get(top4[3].name)!);
+    const q1Loser = qualifier1.winner === top4[0].name ? top4[1].name : top4[0].name;
+    const qualifier2 = simulateMatch(teamMap.get(q1Loser)!, teamMap.get(eliminator.winner)!);
+    const final = simulateMatch(teamMap.get(qualifier1.winner)!, teamMap.get(qualifier2.winner)!);
+    playoffs = { qualifier1, eliminator, qualifier2, final };
+    champion = final.winner;
+  }
 
-  const q1Loser = qualifier1.winner === top4[0].name ? top4[1].name : top4[0].name;
-  const elimWinner = eliminator.winner;
-
-  const qualifier2 = simulateMatch(teamMap.get(q1Loser)!, teamMap.get(elimWinner)!);
-
-  const finalist1 = qualifier1.winner;
-  const finalist2 = qualifier2.winner;
-
-  const final = simulateMatch(teamMap.get(finalist1)!, teamMap.get(finalist2)!);
-
-  return {
-    leagueMatches,
-    standings,
-    playoffs: { qualifier1, eliminator, qualifier2, final },
-    champion: final.winner,
-  };
+  return { leagueMatches, standings, playoffs, champion };
 }
 
 export function createPlayer(name: string): Player {

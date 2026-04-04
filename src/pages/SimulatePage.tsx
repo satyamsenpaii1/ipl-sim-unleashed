@@ -14,7 +14,7 @@ const SimulatePage: React.FC = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    if (teams.length < 6) navigate("/");
+    if (teams.length < 2) navigate("/");
   }, [teams, navigate]);
 
   const runSimulation = () => {

@@ -7,9 +7,10 @@ interface PlayerInputProps {
   onChange: (val: string) => void;
   onAdd: (name: string) => void;
   placeholder?: string;
+  excludePlayers?: Set<string>;
 }
 
-const PlayerInput: React.FC<PlayerInputProps> = ({ value, onChange, onAdd, placeholder }) => {
+const PlayerInput: React.FC<PlayerInputProps> = ({ value, onChange, onAdd, placeholder, excludePlayers }) => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [corrected, setCorrected] = useState<string | null>(null);
@@ -27,7 +28,10 @@ const PlayerInput: React.FC<PlayerInputProps> = ({ value, onChange, onAdd, place
 
   const handleChange = (val: string) => {
     onChange(val);
-    const s = getSuggestions(val);
+    let s = getSuggestions(val);
+    if (excludePlayers) {
+      s = s.filter(name => !excludePlayers.has(name.toLowerCase()));
+    }
     setSuggestions(s);
     setShowSuggestions(s.length > 0);
     setCorrected(null);
@@ -91,22 +95,11 @@ const PlayerInput: React.FC<PlayerInputProps> = ({ value, onChange, onAdd, place
           <span className="text-muted-foreground">
             Did you mean <span className="font-semibold text-primary">{corrected}</span>?
           </span>
+          <button onClick={acceptCorrection} className="text-xs gradient-primary text-primary-foreground px-2 py-1 rounded-md">Yes</button>
           <button
-            onClick={acceptCorrection}
-            className="text-xs gradient-primary text-primary-foreground px-2 py-1 rounded-md"
-          >
-            Yes
-          </button>
-          <button
-            onClick={() => {
-              onAdd(value.trim());
-              onChange("");
-              setCorrected(null);
-            }}
+            onClick={() => { onAdd(value.trim()); onChange(""); setCorrected(null); }}
             className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-md"
-          >
-            No, keep original
-          </button>
+          >No, keep original</button>
         </div>
       )}
     </div>
