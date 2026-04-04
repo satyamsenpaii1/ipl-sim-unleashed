@@ -1,12 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { Team, MatchResult, TeamStanding } from "@/lib/simulation";
-
-interface PlayoffResults {
-  qualifier1: MatchResult;
-  eliminator: MatchResult;
-  qualifier2: MatchResult;
-  final: MatchResult;
-}
+import { Team, MatchResult, TeamStanding, PlayoffResults } from "@/lib/simulation";
 
 interface TournamentState {
   teams: Team[];

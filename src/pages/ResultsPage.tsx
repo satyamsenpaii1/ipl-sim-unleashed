@@ -19,6 +19,8 @@ const ResultsPage: React.FC = () => {
 
   if (!simulated || !playoffs) return null;
 
+  const hasFullPlayoffs = !!playoffs.qualifier1;
+
   const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
     { key: "table", label: "Points Table", icon: <Table className="w-4 h-4" /> },
     { key: "matches", label: "Matches", icon: <List className="w-4 h-4" /> },
@@ -27,7 +29,6 @@ const ResultsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Champion Banner */}
       <div className="gradient-hero text-primary-foreground py-10 px-4 text-center">
         <div className="animate-fade-in-up">
           <Trophy className="w-12 h-12 mx-auto mb-3 text-secondary" />
@@ -38,7 +39,6 @@ const ResultsPage: React.FC = () => {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-6">
-        {/* Tab Navigation */}
         <div className="flex gap-1 bg-muted p-1 rounded-xl mb-6">
           {tabs.map(t => (
             <button
@@ -56,7 +56,6 @@ const ResultsPage: React.FC = () => {
           ))}
         </div>
 
-        {/* Content */}
         {tab === "table" && <PointsTable standings={standings} />}
 
         {tab === "matches" && (
@@ -69,14 +68,19 @@ const ResultsPage: React.FC = () => {
 
         {tab === "playoffs" && (
           <div className="space-y-4">
-            <MatchCard match={playoffs.qualifier1} index={0} isPlayoff playoffLabel="Qualifier 1" />
-            <MatchCard match={playoffs.eliminator} index={1} isPlayoff playoffLabel="Eliminator" />
-            <MatchCard match={playoffs.qualifier2} index={2} isPlayoff playoffLabel="Qualifier 2" />
-            <MatchCard match={playoffs.final} index={3} isPlayoff playoffLabel="🏆 FINAL" />
+            {playoffs.qualifier1 && (
+              <MatchCard match={playoffs.qualifier1} index={0} isPlayoff playoffLabel="Qualifier 1" />
+            )}
+            {playoffs.eliminator && (
+              <MatchCard match={playoffs.eliminator} index={1} isPlayoff playoffLabel="Eliminator" />
+            )}
+            {playoffs.qualifier2 && (
+              <MatchCard match={playoffs.qualifier2} index={2} isPlayoff playoffLabel="Qualifier 2" />
+            )}
+            <MatchCard match={playoffs.final} index={3} isPlayoff playoffLabel={hasFullPlayoffs ? "🏆 FINAL" : "🏆 FINAL"} />
           </div>
         )}
 
-        {/* Actions */}
         <div className="mt-8 flex justify-center gap-3">
           <Button variant="outline" onClick={() => navigate("/")} className="gap-2">
             <ArrowLeft className="w-4 h-4" /> New Tournament
