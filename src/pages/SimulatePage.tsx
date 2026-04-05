@@ -52,7 +52,7 @@ const SimulatePage: React.FC = () => {
             <h1 className="text-2xl font-black text-foreground mb-2">Ready to Simulate</h1>
             <p className="text-muted-foreground mb-2">{teams.length} teams • Round-Robin + Playoffs</p>
             <p className="text-xs text-muted-foreground mb-8">
-              {teams.length * (teams.length - 1) / 2} league matches + 4 playoff matches
+              {teams.length * (teams.length - 1) / 2} league matches + {teams.length <= 2 ? 1 : teams.length === 3 ? 2 : 4} playoff matches
             </p>
             <Button
               onClick={runSimulation}
