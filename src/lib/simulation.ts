@@ -100,7 +100,8 @@ export function simulateMatch(team1: Team, team2: Team): MatchResult {
     summary = pick(SUMMARIES_WIN);
   } else if (score2.runs > score1.runs) {
     winner = team2.name;
-    margin = `${10 - score2.wickets} wickets`;
+    const wicketsRemaining = Math.max(1, 10 - score2.wickets);
+    margin = `${wicketsRemaining} wicket${wicketsRemaining > 1 ? "s" : ""}`;
     summary = pick(SUMMARIES_WIN);
   } else {
     winner = Math.random() > 0.5 ? team1.name : team2.name;
